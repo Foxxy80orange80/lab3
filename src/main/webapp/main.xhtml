@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: Артём
+  Date: 17.10.2022
+  Time: 16:57
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+   <!--    <meta charset="UTF-8">-->
+   <!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+   <!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+   <title>Document</title>
+   <style type="text/css">
+      /*Селектор по классу*/
+      .mainTable {
+         width: 100%;
+         text-align: center;
+         border: solid;
+         table-layout: fixed;
+         border-collapse: collapse;
+      }
+      /*Селектор атрибутов*/
+      .header {
+         border-bottom: 1px solid gray;
+         margin-bottom: 5%;
+         background-color: antiquewhite;
+         font-size: large;
+         color: brown;
+         font-family: monospace;
+      }
+      /*Наследование*/
+      body {
+         /* Каскадирование */
+         background-color: aquamarine;
+      }
+      form {
+         padding-bottom: 5%;
+         font-size: 16px;
+      }
+      .inputRow td {
+         /* каскадирование */
+         background-color: aliceblue;
+         padding-bottom: 9%;
+      }
+      /*Селектор типу элемента*/
+      th {
+         background-color: aliceblue;
+         padding-top: 5%;
+         padding-bottom: 2%;
+      }
+      /*Дочерний селектор*/
+      .bottom > td {
+         border-top: 1px solid gray;
+         padding-bottom: 0.4%;
+         background-color: antiquewhite;
+      }
+      /*Селектор псевдоэлемента*/
+      a::after {
+         content: "→";
+      }
+      /*Селектор псевдокласса*/
+      a:hover {
+         opacity: .5;
+      }
+
+      .input {
+         margin-bottom: 5%;
+      }
+      #canv{
+         width: 500px;
+         height: 400px;
+         border: 1px solid black;
+         background-color: white;
+      }
+
+      .scroll-table {
+         max-height: 380px;
+         overflow-x: auto;
+         border-bottom: 1px solid #eee;
+         width: 80%;
+         margin: 0px auto 20px;
+      }
+
+      #result table {
+         table-layout: fixed;
+         border: none;
+      }
+
+      #table2 {
+         width:80%;
+         margin-left: auto;
+         margin-right: auto;
+      }
+
+      #table1 {
+         width:100%;
+      }
+
+
+
+      #result thead th {
+         font-weight: bold;
+         text-align: center;
+         border: none;
+         padding: 10px 15px;
+         background: #d8d8d8;
+         font-size: 14px;
+         border-left: 1px solid #ddd;
+         border-right: 1px solid #ddd;
+      }
+
+      #result tbody td {
+         text-align: center;
+         padding: 10px 15px;
+         font-size: 14px;
+         vertical-align: center;
+      }
+
+      /* Стили для скролла */
+      ::-webkit-scrollbar {
+         width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+         box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+      }
+      ::-webkit-scrollbar-thumb {
+         box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+      }
+   </style>
+   <script src="scripts/draw.js" type="text/javascript"></script>
+   <script src="scripts/checker.js" type="text/javascript"></script>
+</h:head>
+
+<h:body>
+   <table class="mainTable">
+      <!-- Шапка -->
+      <tr>
+         <td colspan="2" class="header">
+            <h3>Dima<br/>Group P32111 <br/>Variant 11000</h3>
+         </td>
+         <td class="header">
+            <h:link>Welcome page</h:link>
+         </td>
+      </tr>
+      <tr>
+         <!-- Заголовки -->
+         <th>Graph</th>
+         <th>Coordinates</th>
+         <th>Table</th>
+      </tr>
+      <tr class="inputRow">
+         <!-- График -->
+         <td id="canvas">
+            <script type="text/javascript">createCanvas()</script>
+            <!--                <canvas id="canv" width="400px" height="300px"></canvas>-->
+         </td>
+         <!-- Форма -->
+         <td>
+            <h:panelGroup id="form_pannel">
+               <h:form>
+                  <!-- Поле ввода координаты Х -->
+                  <!--                <div class="input">-->
+                  <p:outputLabel for="@next" value="X: "/>
+                  <p:spinner id="xVal" value="#{shot.x}" min="-5" max="5" required="true" requiredMessage="  Enter a value"/>
+                  <br/>
+                  <h:message for="xVal" style="color: red"/>
+                  <br/>
+                  <!--                    <div id="xError"></div>-->
+                  <!--                </div>-->
+
+                  <br/>
+                  <!-- Поле ввода координаты Y -->
+                  <div class="input">
+                     <h:outputLabel for="textY">Y: </h:outputLabel>
+                     <h:inputText value="#{shot.y}" id="textY" required="true" requiredMessage="Enter a value from -5 to 3" converterMessage="Not a number" validatorMessage="Enter a value from -5 to 3">
+                        <f:validateDoubleRange minimum="-5" maximum="3"/>
+                     </h:inputText>
+                     <br/><h:message for="textY" style="color: red"/>
+                  </div>
+                  <!-- Поле ввода параметра R -->
+                  <div class="input">
+                     <h:outputLabel>R: </h:outputLabel>
+                     <h:commandButton id="r1" type="button" value = "1" action = "#{shot.setR(1)}" onclick = "drawGraph(1)"><f:ajax render="message" /></h:commandButton>
+                     <h:commandButton id="r2" type="button" value = "2" action = "#{shot.setR(2)}" onclick = "drawGraph(2)"><f:ajax render="message" /></h:commandButton>
+                     <h:commandButton id="r3" type="button" value = "3" action = "#{shot.setR(3)}" onclick = "drawGraph(3)" ><f:ajax render="message" /></h:commandButton>
+                     <h:commandButton id="r4" type="button" value = "4" action = "#{shot.setR(4)}" onclick = "drawGraph(4)" ><f:ajax render="message" /></h:commandButton>
+                     <h:commandButton id="r5" type="button" value = "5" action = "#{shot.setR(5)}" onclick = "drawGraph(5)" ><f:ajax render="message" /></h:commandButton>
+                     <h:panelGroup id="message">
+                        <h:inputHidden value="#{shot.r}" id="textR" validatorMessage="Choose radius" converterMessage="Choose radius"><f:validateDoubleRange maximum="5" minimum="1"/></h:inputHidden>
+                        <br/><h:message for="textR" style="color: red"/></h:panelGroup>
+                  </div>
+                  <!-- Кнопка подтверждения -->
+                  <h:commandButton value = "Submit" action="#{datas.addData(shot)}" id="button"><f:ajax execute="@form" render="result form_pannel"/> </h:commandButton>
+               </h:form>
+            </h:panelGroup>
+         </td>
+         <td>
+            <h:panelGroup id="result">
+               <h:dataTable id="table2">
+                  <h:column>
+                     <f:facet name = "header">X</f:facet>
+                     <!--                                #{data.x}-->
+                  </h:column>
+
+                  <h:column>
+                     <f:facet name = "header">Y</f:facet>
+                     <!--                                #{data.y}-->
+                  </h:column>
+
+                  <h:column>
+                     <f:facet name = "header">R</f:facet>
+                     <!--                                #{data.r}-->
+                  </h:column>
+
+                  <h:column>
+                     <f:facet name = "header">Hit</f:facet>
+                     <!--                                #{data.hit}-->
+                  </h:column>
+               </h:dataTable>
+               <div class="scroll-table">
+                  <h:dataTable id="table1" value = "#{datas.dates}" var = "data">
+
+                     <h:column>
+                        <!--                            <f:facet name = "header">X</f:facet>-->
+                        #{data.x}
+                     </h:column>
+
+                     <h:column>
+                        <!--                            <f:facet name = "header">Y</f:facet>-->
+                        #{data.y}
+                     </h:column>
+
+                     <h:column>
+                        <!--                            <f:facet name = "header">R</f:facet>-->
+                        #{data.r}
+                     </h:column>
+
+                     <h:column>
+                        <!--                            <f:facet name = "header">Hit</f:facet>-->
+                        #{data.hit}
+                     </h:column>
+                  </h:dataTable>
+               </div>
+               <script type="text/javascript">
+                  removeRow()
+                  getR()
+                  getData()
+               </script>
+            </h:panelGroup>
+         </td>
+      </tr>
+      <!-- Футер -->
+      <tr class="bottom">
+         <td></td><td>Saint-Petersburg 2022</td><td></td>
+      </tr>
+   </table>
+</h:body>
+
+</html>
